@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cottage">
+<meta name="theme-color" content="#1e4d6b">
+<title>Mackinaw Cottage</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --lake:#4a90b8; --lake-light:#d6eaf5; --lake-deep:#1e4d6b; --lake-mid:#2c6e9a;
+  --bridge:#8b6914; --bridge-light:#f5ecd4;
+  --lighthouse:#c0392b; --lh-light:#fdecea;
+  --forest:#2e6b4f; --forest-light:#e4f2eb;
+  --sky:#f0f7fc; --white:#fff; --text:#1e2d3a; --muted:#6b8392;
+  --border:#d5e3ec; --shadow:rgba(44,110,154,0.10); --notif:#e8431a;
+  --gold:#d4a017; --gold-light:#fef8e6;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--sky);color:var(--text);min-height:100dvh;}
+
+/* ─── SETUP SCREEN ─── */
+#setupScreen{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(160deg,#daf0fa 0%,#f0f7fc 50%,#e8f4f0 100%);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.setup-card{
+  background:white;border-radius:24px;padding:36px 32px;max-width:520px;width:100%;
+  box-shadow:0 8px 48px rgba(44,110,154,0.18);border:1px solid var(--border);
+}
+.setup-card h2{font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:var(--lake-deep);margin-bottom:4px;}
+.setup-card .subtitle{font-size:0.85rem;color:var(--muted);margin-bottom:24px;line-height:1.5;}
+.setup-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.setup-step{
+  background:var(--sky);border:1px solid var(--border);border-radius:10px;
+  padding:12px 16px;font-size:0.83rem;color:var(--lake-mid);line-height:1.75;
+}
+.setup-step strong{color:var(--lake-deep);display:block;margin-bottom:2px;}
+.setup-step code{background:var(--lake-light);border-radius:4px;padding:1px 6px;font-family:monospace;font-size:0.82rem;color:var(--lake-deep);}
+.setup-inputs{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+.setup-inputs input{
+  width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;
+  font-family:'Nunito',sans-serif;font-size:0.92rem;color:var(--text);background:var(--sky);
+  outline:none;transition:border-color 0.2s;
+}
+.setup-inputs input:focus{border-color:var(--lake);background:white;}
+.setup-inputs input::placeholder{color:#aac4d8;}
+
+/* ─── LOGIN ─── */
+#loginScreen{
+  min-height:100dvh;display:flex;flex-direction:column;
+  background:linear-gradient(160deg,#daf0fa 0%,#f0f7fc 40%,#e8f4f0 100%);
+}
+.login-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px;}
+.login-card{
+  background:white;border-radius:24px;padding:40px 36px;max-width:390px;width:100%;
+  box-shadow:0 8px 48px rgba(44,110,154,0.15);border:1px solid var(--border);
+}
+.login-hero{text-align:center;margin-bottom:30px;}
+.login-icon{font-size:2.8rem;display:block;margin-bottom:10px;}
+.login-hero h2{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--lake-deep);}
+.login-hero p{color:var(--muted);font-size:0.85rem;margin-top:4px;}
+
+/* ─── HEADER ─── */
+header{
+  background:linear-gradient(135deg,#1e4d6b 0%,#2c6e9a 60%,#4a90b8 100%);
+  color:white;position:sticky;top:0;z-index:200;
+  box-shadow:0 4px 20px rgba(30,77,107,0.25);
+}
+.header-inner{max-width:1000px;margin:0 auto;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.header-brand{display:flex;align-items:center;gap:10px;}
+.header-icon{font-size:1.8rem;}
+.header-title{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:700;line-height:1.1;}
+.header-sub{font-size:0.68rem;opacity:0.7;font-weight:300;letter-spacing:0.08em;text-transform:uppercase;}
+.header-right{display:flex;align-items:center;gap:7px;flex-shrink:0;}
+.user-badge{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:4px 12px;font-size:0.8rem;font-weight:700;}
+.admin-tag{background:var(--bridge);border-radius:20px;padding:2px 8px;font-size:0.66rem;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;}
+.btn-logout{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:white;border-radius:8px;padding:5px 11px;font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;transition:background 0.2s;}
+.btn-logout:hover{background:rgba(255,255,255,0.22);}
+.bridge-strip{height:28px;overflow:hidden;}
+.bridge-strip svg{display:block;width:100%;height:100%;}
+
+/* ─── TABS ─── */
+.tab-bar{
+  max-width:1000px;margin:0 auto;padding:14px 16px 0;
+  display:flex;gap:5px;
+}
+.tab-btn{
+  flex:1;background:white;border:1.5px solid var(--border);border-radius:12px 12px 0 0;
+  padding:9px 6px;font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:700;
+  color:var(--muted);cursor:pointer;transition:all 0.18s;position:relative;
+  border-bottom:none;
+}
+.tab-btn.active{background:var(--lake-deep);color:white;border-color:var(--lake-deep);}
+.tab-btn:hover:not(.active){background:var(--lake-light);color:var(--lake-deep);}
+.notif-dot{
+  position:absolute;top:5px;right:8px;
+  background:var(--notif);color:white;border-radius:20px;
+  font-size:0.62rem;font-weight:800;padding:1px 5px;min-width:16px;text-align:center;
+  display:none;
+}
+
+/* ─── MAIN ─── */
+main{max-width:1000px;margin:0 auto;padding:0 16px 80px;}
+.tab-panel{background:white;border:1.5px solid var(--lake-deep);border-radius:0 16px 16px 16px;padding:24px 22px;margin-bottom:20px;box-shadow:0 4px 24px var(--shadow);}
+
+/* ─── COMMON ─── */
+.card-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--lake-deep);margin-bottom:18px;display:flex;align-items:center;gap:7px;}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.form-group label{font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--lake-deep);}
+.form-group input,.form-group select,.form-group textarea{
+  padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;
+  font-family:'Nunito',sans-serif;font-size:0.92rem;color:var(--text);background:var(--sky);
+  outline:none;transition:border-color 0.2s,background 0.2s;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--lake);background:white;}
+.form-group textarea{resize:vertical;min-height:80px;line-height:1.5;}
+.form-row{display:flex;gap:12px;flex-wrap:wrap;}
+.form-row .form-group{flex:1;min-width:140px;margin-bottom:0;}
+.msg{border-radius:8px;padding:9px 13px;font-size:0.85rem;margin-top:10px;display:none;}
+.msg.error{background:var(--lh-light);color:var(--lighthouse);border:1px solid #f5c6c2;}
+.msg.success{background:var(--forest-light);color:var(--forest);border:1px solid #b2dfbb;}
+.msg.info{background:var(--lake-light);color:var(--lake-deep);border:1px solid var(--lake);}
+
+/* ─── BUTTONS ─── */
+.btn-primary{
+  background:linear-gradient(135deg,var(--lake-deep),var(--lake-mid));color:white;
+  border:none;border-radius:10px;padding:11px 22px;
+  font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:800;cursor:pointer;
+  transition:opacity 0.2s,transform 0.1s;
+}
+.btn-primary:hover{opacity:0.9;}
+.btn-primary:active{transform:scale(0.97);}
+.btn-green{background:linear-gradient(135deg,var(--forest),#3a8c60);color:white;border:none;border-radius:10px;padding:11px 22px;font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:800;cursor:pointer;transition:opacity 0.2s;}
+.btn-green:hover{opacity:0.9;}
+.btn-sm{border-radius:7px;padding:4px 10px;font-size:0.76rem;font-weight:700;cursor:pointer;border:1.5px solid;font-family:'Nunito',sans-serif;transition:all 0.15s;white-space:nowrap;}
+.btn-edit{background:var(--lake-light);color:var(--lake-deep);border-color:var(--lake);}
+.btn-edit:hover{background:var(--lake);color:white;}
+.btn-del{background:var(--lh-light);color:var(--lighthouse);border-color:#f5c6c2;}
+.btn-del:hover{background:var(--lighthouse);color:white;border-color:var(--lighthouse);}
+.btn-accept{background:var(--forest-light);color:var(--forest);border-color:#b2dfbb;}
+.btn-accept:hover{background:var(--forest);color:white;border-color:var(--forest);}
+.btn-decline{background:var(--lh-light);color:var(--lighthouse);border-color:#f5c6c2;}
+.btn-decline:hover{background:var(--lighthouse);color:white;}
+.btn-request{background:var(--gold-light);color:var(--bridge);border-color:#e8c84a;font-size:0.72rem;padding:3px 8px;}
+.btn-request:hover{background:var(--gold);color:white;border-color:var(--gold);}
+
+/* ─── BOOKING ITEMS ─── */
+.booking-item{
+  display:flex;align-items:center;gap:10px;padding:12px 15px;
+  border-radius:12px;border:1.5px solid var(--border);background:var(--sky);margin-bottom:7px;
+}
+.booking-item.conflict{background:var(--lh-light);border-color:#f5c6c2;}
+.booking-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.booking-info{flex:1;min-width:0;}
+.booking-name{font-weight:700;font-size:0.9rem;color:var(--lake-deep);}
+.booking-dates{font-size:0.78rem;color:var(--muted);margin-top:1px;}
+.booking-actions{display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+.conflict-badge{font-size:0.68rem;font-weight:800;background:var(--lighthouse);color:white;border-radius:20px;padding:2px 9px;white-space:nowrap;}
+.empty-state{text-align:center;color:var(--muted);padding:24px 0;}
+.empty-state span{font-size:1.8rem;display:block;margin-bottom:7px;}
+
+/* ─── CALENDAR ─── */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.cal-nav-btn{background:var(--sky);border:1.5px solid var(--border);border-radius:8px;width:32px;height:32px;font-size:1.1rem;cursor:pointer;color:var(--lake-deep);display:flex;align-items:center;justify-content:center;transition:background 0.15s;}
+.cal-nav-btn:hover{background:var(--lake-light);border-color:var(--lake);}
+.cal-month{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:var(--lake-deep);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-day-name{text-align:center;font-size:0.67rem;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);padding:3px 0 9px;}
+.cal-cell{border-radius:7px;min-height:68px;padding:4px 5px;background:var(--sky);border:1.5px solid transparent;transition:background 0.15s;}
+.cal-cell.other-month{opacity:0.28;}
+.cal-cell.today{border-color:var(--lake);}.cal-cell.today .cal-date{color:var(--lake);text-decoration:underline;text-underline-offset:2px;}
+.cal-cell.past{opacity:0.42;}
+.cal-cell.holiday{background:linear-gradient(135deg,#fffbe8,#fef3cc);border-color:#e8c84a;}
+.cal-date{font-size:0.75rem;font-weight:800;color:var(--lake-deep);margin-bottom:2px;}
+.holiday-label{font-size:0.57rem;color:var(--bridge);font-weight:800;text-transform:uppercase;letter-spacing:0.03em;line-height:1.2;display:block;margin-bottom:2px;}
+.booking-chip{font-size:0.63rem;font-weight:700;padding:1px 5px;border-radius:20px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block;}
+.legend{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:0.76rem;color:var(--muted);}
+.legend-dot{width:8px;height:8px;border-radius:50%;}
+.legend-hol{width:8px;height:8px;border-radius:2px;background:#e8c84a;}
+
+/* ─── NOTIFICATIONS ─── */
+.notif-item{
+  background:var(--sky);border:1.5px solid var(--border);border-radius:12px;
+  padding:14px 16px;margin-bottom:8px;
+}
+.notif-item.pending{border-color:var(--gold);background:var(--gold-light);}
+.notif-item.accepted{border-color:#b2dfbb;background:var(--forest-light);}
+.notif-item.declined{border-color:#f5c6c2;background:var(--lh-light);}
+.notif-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;}
+.notif-title{font-weight:700;font-size:0.88rem;color:var(--lake-deep);}
+.notif-time{font-size:0.72rem;color:var(--muted);}
+.notif-body{font-size:0.83rem;color:var(--text);margin-bottom:4px;line-height:1.5;}
+.notif-dates{font-size:0.78rem;font-weight:700;color:var(--lake-mid);margin-bottom:8px;}
+.notif-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.status-pill{font-size:0.72rem;font-weight:800;border-radius:20px;padding:2px 10px;display:inline-block;}
+.status-pill.pending{background:#fde8a0;color:var(--bridge);}
+.status-pill.accepted{background:var(--forest-light);color:var(--forest);}
+.status-pill.declined{background:var(--lh-light);color:var(--lighthouse);}
+
+/* ─── ADMIN ─── */
+.admin-section-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:var(--bridge);margin-bottom:12px;padding-bottom:7px;border-bottom:2px solid var(--bridge-light);}
+.user-item{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--sky);margin-bottom:5px;}
+.user-item .uname{flex:1;font-weight:700;font-size:0.88rem;}
+.role-tag{font-size:0.66rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;border-radius:20px;padding:2px 8px;}
+.role-tag.admin{background:var(--lake-light);color:var(--lake-deep);}
+.role-tag.member{background:var(--bridge-light);color:var(--bridge);}
+.divider{height:1px;background:var(--border);margin:20px 0;}
+
+/* ─── MODAL ─── */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,40,60,0.45);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:white;border-radius:20px;padding:28px 26px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(20,40,60,0.28);transform:translateY(10px);transition:transform 0.2s;}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--lake-deep);margin-bottom:16px;}
+.modal-actions{display:flex;gap:8px;margin-top:18px;}
+.btn-cancel{flex:1;background:var(--sky);color:var(--muted);border:1.5px solid var(--border);border-radius:10px;padding:10px;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;}
+.btn-cancel:hover{background:var(--border);}
+.btn-save{flex:1;background:linear-gradient(135deg,var(--lake-deep),var(--lake-mid));color:white;border:none;border-radius:10px;padding:10px;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;}
+.btn-save:hover{opacity:0.9;}
+.btn-save.green{background:linear-gradient(135deg,var(--forest),#3a8c60);}
+.btn-save.red{background:linear-gradient(135deg,var(--lighthouse),#e05040);}
+
+.conflict-notice{background:var(--lh-light);border:1.5px solid #f5c6c2;border-radius:10px;padding:11px 15px;margin-bottom:14px;display:none;}
+.conflict-notice strong{color:var(--lighthouse);}
+.conflict-notice p{font-size:0.83rem;color:#7a2020;margin-top:2px;}
+
+/* ─── CALENDAR SELECTION ─── */
+.cal-cell.clickable{cursor:pointer;}
+.cal-cell.clickable:hover:not(.cal-selected):not(.cal-in-range){background:var(--lake-light);border-color:var(--lake);}
+.cal-cell.cal-in-range{background:var(--lake-light);border-color:var(--lake);}
+.cal-cell.cal-selected{background:var(--lake-deep)!important;border-color:var(--lake-deep)!important;}
+.cal-cell.cal-selected .cal-date{color:white;}
+.cal-cell.cal-selected .holiday-label{color:rgba(255,255,255,0.75);}
+
+@media(max-width:600px){
+  .header-inner{flex-wrap:wrap;}
+  .form-row{flex-direction:column;}
+  .cal-cell{min-height:50px;}
+  .booking-chip{font-size:0.57rem;}
+  .tab-btn{font-size:0.74rem;padding:8px 3px;}
+  .tab-panel{padding:18px 14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SETUP SCREEN (shown until Supabase configured)
+══════════════════════════════════════════ -->
+<div id="setupScreen">
+  <div class="setup-card">
+    <h2>🏡 One-time Setup</h2>
+    <p class="subtitle">Connect your Supabase database so all family members share the same bookings. This takes about 5 minutes and only needs to be done once.</p>
+
+    <div class="setup-steps">
+      <div class="setup-step">
+        <strong>1 · Create a free Supabase project</strong>
+        Go to <strong>supabase.com</strong> → New Project. Copy your <code>Project URL</code> and <code>anon public key</code> from Settings → API.
+      </div>
+      <div class="setup-step">
+        <strong>2 · Run this SQL in Supabase SQL Editor</strong>
+        Go to SQL Editor in your Supabase dashboard and paste + run the SQL from the <code>SETUP.sql</code> file included with this app.
+      </div>
+      <div class="setup-step">
+        <strong>3 · Paste your credentials below and save</strong>
+        These are stored only in your browser and never sent anywhere except Supabase.
+      </div>
+    </div>
+
+    <div class="setup-inputs">
+      <input type="url" id="sbUrl" placeholder="Supabase Project URL  (https://xxxx.supabase.co)" autocomplete="off">
+      <input type="text" id="sbKey" placeholder="Supabase anon public key" autocomplete="off">
+    </div>
+    <button class="btn-primary" style="width:100%" onclick="saveConfig()">Save &amp; Connect →</button>
+    <div class="msg error" id="setupErr" style="display:none"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════════ -->
+<div id="loginScreen" style="display:none;">
+  <div style="background:linear-gradient(135deg,#1e4d6b,#2c6e9a);color:white;text-align:center;padding:10px;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;opacity:0.9;">
+    🌉 Mackinaw City, Michigan · Where Lake Huron Meets Lake Michigan
+  </div>
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-hero">
+        <span class="login-icon">🏡</span>
+        <h2>Family Cottage</h2>
+        <p>Mackinaw City · Shared Booking Calendar</p>
+      </div>
+      <div class="form-group"><label>Username</label><input type="text" id="loginUser" placeholder="Your name" autocomplete="username"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="Password" autocomplete="current-password"></div>
+      <button class="btn-primary" style="width:100%;margin-top:4px;" onclick="doLogin()">Sign In</button>
+      <div class="msg error" id="loginErr"></div>
+      <div style="text-align:center;margin-top:16px;">
+        <button onclick="resetConnection()" style="background:none;border:none;color:var(--muted);font-family:'Nunito',sans-serif;font-size:0.75rem;cursor:pointer;text-decoration:underline;text-underline-offset:2px;">Reconnect to Supabase</button>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;padding:14px;color:#6b8392;font-size:0.76rem;">🌊 Straits of Mackinac</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     APP
+══════════════════════════════════════════ -->
+<div id="appScreen" style="display:none;">
+  <header>
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="header-icon">🏡</span>
+        <div>
+          <div class="header-title">Mackinaw Cottage</div>
+          <div class="header-sub">Family Booking · Mackinaw City, MI</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="user-badge" id="headerName"></span>
+        <span class="admin-tag" id="headerAdmin" style="display:none">Admin</span>
+        <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+      </div>
+    </div>
+    <div class="bridge-strip">
+      <svg viewBox="0 0 1200 28" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="16" width="1200" height="12" fill="#1a3f58"/>
+        <rect x="375" y="0" width="11" height="28" fill="#1a3f58"/>
+        <rect x="814" y="0" width="11" height="28" fill="#1a3f58"/>
+        <rect x="371" y="0" width="19" height="4" fill="#1a3f58"/>
+        <rect x="810" y="0" width="19" height="4" fill="#1a3f58"/>
+        <line x1="381" y1="2" x2="160" y2="18" stroke="#3a7ea8" stroke-width="1.3" opacity="0.9"/>
+        <line x1="381" y1="2" x2="280" y2="18" stroke="#3a7ea8" stroke-width="1.3" opacity="0.9"/>
+        <line x1="381" y1="2" x2="460" y2="18" stroke="#3a7ea8" stroke-width="1.3" opacity="0.9"/>
+        <line x1="381" y1="2" x2="560" y2="18" stroke="#3a7ea8" stroke-width="1.3" opacity="0.9"/>
+        <line x1="819" y1="2" x2="640" y2="18" stroke="#3a7ea8" stroke-width="1.3" opacity="0.9"/>
+        <line x1="819" y1="2" x2="740" y2="18" stroke="#3a7ea8" stroke-width="1.3" opacity="0.9"/>
+        <line x1="819" y1="2" x2="900" y2="18" stroke="#3a7ea8" stroke-width="1.3" opacity="0.9"/>
+        <line x1="819" y1="2" x2="1040" y2="18" stroke="#3a7ea8" stroke-width="1.3" opacity="0.9"/>
+      </svg>
+    </div>
+  </header>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-calendar-btn" onclick="showTab('calendar')">🗓 Calendar</button>
+    <button class="tab-btn" id="tab-all-btn" onclick="showTab('all')">📋 All Stays</button>
+    <button class="tab-btn" id="tab-notif-btn" onclick="showTab('notif')">
+      🔔 Requests<span class="notif-dot" id="notifDot"></span>
+    </button>
+    <button class="tab-btn" id="tab-admin-btn" onclick="showTab('admin')" style="display:none">⚙️ Admin</button>
+  </div>
+
+  <main>
+    <!-- CALENDAR TAB -->
+    <div class="tab-panel" id="tab-calendar">
+      <div class="card-title">🏕 Reserve the Cottage</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">Click a date on the calendar to set check-in, then click again for check-out.</p>
+      <div class="form-row">
+        <div class="form-group"><label>Check-in</label><input type="date" id="newStart"></div>
+        <div class="form-group"><label>Check-out</label><input type="date" id="newEnd"></div>
+      </div>
+      <button class="btn-green" style="margin-top:8px;" onclick="addBooking()">Reserve Dates</button>
+      <div class="msg error" id="bookErr"></div>
+      <div class="msg success" id="bookOk"></div>
+
+      <div class="divider" style="margin:16px 0 12px;"></div>
+
+      <div class="cal-nav">
+        <span class="cal-month" id="calLabel"></span>
+        <div style="display:flex;align-items:center;gap:9px">
+          <button class="cal-nav-btn" onclick="changeMonth(-1)">&#8249;</button>
+          <button class="cal-nav-btn" onclick="changeMonth(1)">&#8250;</button>
+        </div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="legend" id="calLegend"></div>
+
+      <div class="divider"></div>
+      <div class="card-title" style="margin-bottom:12px;">🗒 My Reservations</div>
+      <div id="myList"></div>
+    </div>
+
+    <!-- ALL STAYS TAB -->
+    <div class="tab-panel" id="tab-all" style="display:none">
+      <div class="card-title">📋 All Family Reservations</div>
+      <div class="conflict-notice" id="conflictNotice">
+        <strong>⚠️ Overlapping Bookings Detected</strong>
+        <p>Some reservations overlap. Use the Request Date Change button to open a discussion, or contact Admin.</p>
+      </div>
+      <div id="allList"></div>
+    </div>
+
+    <!-- NOTIFICATIONS TAB -->
+    <div class="tab-panel" id="tab-notif" style="display:none">
+      <div class="card-title">🔔 Date-Change Requests</div>
+      <p style="font-size:0.83rem;color:var(--muted);margin-bottom:16px;">Incoming requests to change one of your reservations, and outgoing requests you've sent.</p>
+      <div id="notifIncoming"></div>
+      <div class="divider"></div>
+      <div class="card-title" style="font-size:1rem;margin-bottom:12px;">📤 My Outgoing Requests</div>
+      <div id="notifOutgoing"></div>
+    </div>
+
+    <!-- ADMIN TAB -->
+    <div class="tab-panel" id="tab-admin" style="display:none">
+      <div class="card-title">⚙️ Admin Panel</div>
+
+      <div class="admin-section-title">➕ Add Family Member</div>
+      <div class="form-row">
+        <div class="form-group"><label>Username</label><input type="text" id="newUser" placeholder="e.g. Cousin Alice"></div>
+        <div class="form-group"><label>Password</label><input type="text" id="newPass" placeholder="Initial password"></div>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:0.83rem;font-weight:600;color:var(--lake-deep);margin-bottom:12px;cursor:pointer;">
+        <input type="checkbox" id="newAdmin" style="accent-color:var(--lake-deep);width:15px;height:15px;"> Grant admin permissions
+      </label>
+      <button class="btn-primary" onclick="addUser()">Add Member</button>
+      <div class="msg error" id="addUserErr"></div>
+      <div class="msg success" id="addUserOk"></div>
+
+      <div class="divider"></div>
+      <div class="admin-section-title">🧑‍🤝‍🧑 Current Members</div>
+      <div id="usersList"></div>
+
+      <div class="divider"></div>
+      <div class="admin-section-title">⚠️ Conflict Resolution</div>
+      <div id="conflictsList"></div>
+
+      <div class="divider"></div>
+      <div class="admin-section-title">📋 All Reservations</div>
+      <div id="adminBookings"></div>
+    </div>
+  </main>
+</div>
+
+<!-- EDIT BOOKING MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <h3>✏️ Edit Reservation</h3>
+    <div class="form-group"><label>Check-in</label><input type="date" id="editStart"></div>
+    <div class="form-group"><label>Check-out</label><input type="date" id="editEnd"></div>
+    <div class="msg error" id="editErr"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
+      <button class="btn-save" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- DATE-CHANGE REQUEST MODAL -->
+<div class="modal-overlay" id="requestModal">
+  <div class="modal">
+    <h3>📨 Request Date Change</h3>
+    <p style="font-size:0.83rem;color:var(--muted);margin-bottom:14px;">Propose new dates for <strong id="requestTargetName"></strong>'s reservation and include a message. They'll be notified and can accept or decline.</p>
+    <div class="form-group"><label>Current Booking</label><input type="text" id="requestCurrentDates" disabled style="color:var(--muted);font-size:0.85rem;"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Proposed New Check-in</label><input type="date" id="requestNewStart"></div>
+      <div class="form-group"><label>Proposed New Check-out</label><input type="date" id="requestNewEnd"></div>
+    </div>
+    <div class="form-group"><label>Your Message</label><textarea id="requestMsg" placeholder="e.g. Hi! Our family reunion falls on those dates — would you be able to shift by a week?"></textarea></div>
+    <div class="msg error" id="requestErr"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('requestModal')">Cancel</button>
+      <button class="btn-save green" onclick="sendRequest()">Send Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- DECLINE REPLY MODAL -->
+<div class="modal-overlay" id="declineModal">
+  <div class="modal">
+    <h3>💬 Decline &amp; Reply</h3>
+    <p style="font-size:0.83rem;color:var(--muted);margin-bottom:14px;">Add an optional message explaining your decline.</p>
+    <div class="form-group"><label>Reply Message (optional)</label><textarea id="declineMsg" placeholder="e.g. Sorry, we have guests arriving that week. Let's talk!"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('declineModal')">Cancel</button>
+      <button class="btn-save red" onclick="confirmDecline()">Decline Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESET PASSWORD MODAL -->
+<div class="modal-overlay" id="resetModal">
+  <div class="modal">
+    <h3>🔑 Reset Password</h3>
+    <p style="font-size:0.83rem;color:var(--muted);margin-bottom:14px;">Setting new password for <strong id="resetForUser"></strong></p>
+    <div class="form-group"><label>New Password</label><input type="text" id="resetNewPass" placeholder="Enter new password"></div>
+    <div class="msg error" id="resetErr"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('resetModal')">Cancel</button>
+      <button class="btn-save" onclick="saveReset()">Reset Password</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  SUPABASE CONFIG
+// ════════════════════════════════════════════════════════
+let SB_URL = localStorage.getItem('sb_url') || '';
+let SB_KEY = localStorage.getItem('sb_key') || '';
+
+function saveConfig() {
+  const url = document.getElementById('sbUrl').value.trim().replace(/\/$/,'');
+  const key = document.getElementById('sbKey').value.trim();
+  if (!url || !key) return showEl('setupErr','Please fill in both fields.','error');
+  if (!url.startsWith('https://')) return showEl('setupErr','URL should start with https://','error');
+  localStorage.setItem('sb_url', url);
+  localStorage.setItem('sb_key', key);
+  SB_URL = url; SB_KEY = key;
+  document.getElementById('setupScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+}
+
+// ── Supabase REST helpers ──
+async function sbFetch(path, opts={}) {
+  const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': `Bearer ${SB_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || 'return=representation',
+      ...opts.headers
+    },
+    method: opts.method || 'GET',
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw new Error(err.message || `HTTP ${res.status}`);
+  }
+  if (res.status === 204) return [];
+  return res.json();
+}
+
+const db = {
+  getUsers:    ()          => sbFetch('users?select=*&order=username.asc'),
+  getUser:     (u)         => sbFetch(`users?username=eq.${encodeURIComponent(u)}&select=*`),
+  createUser:  (d)         => sbFetch('users', {method:'POST', body:d}),
+  updateUser:  (id,d)      => sbFetch(`users?id=eq.${id}`, {method:'PATCH', body:d, prefer:'return=minimal'}),
+  deleteUser:  (id)        => sbFetch(`users?id=eq.${id}`, {method:'DELETE', prefer:'return=minimal'}),
+
+  getBookings: ()          => sbFetch('bookings?select=*&order=start_date.asc'),
+  addBooking:  (d)         => sbFetch('bookings', {method:'POST', body:d}),
+  updateBooking:(id,d)     => sbFetch(`bookings?id=eq.${id}`, {method:'PATCH', body:d, prefer:'return=minimal'}),
+  deleteBooking:(id)       => sbFetch(`bookings?id=eq.${id}`, {method:'DELETE', prefer:'return=minimal'}),
+
+  getRequests: ()          => sbFetch('requests?select=*&order=created_at.desc'),
+  addRequest:  (d)         => sbFetch('requests', {method:'POST', body:d}),
+  updateRequest:(id,d)     => sbFetch(`requests?id=eq.${id}`, {method:'PATCH', body:d, prefer:'return=minimal'}),
+  deleteRequest:(id)       => sbFetch(`requests?id=eq.${id}`, {method:'DELETE', prefer:'return=minimal'}),
+};
+
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+let currentUser = null;
+let allBookings = [];
+let allRequests = [];
+let allUsers = [];
+let calYear, calMonth, calSelStart = null;
+
+const COLORS = [
+  '#2d7d46','#1a6b8a','#9a4a1a','#6b2d7d','#7d6b1a',
+  '#1a5c6b','#7d2d4a','#4a7d2d','#6b4a1a','#2d4a7d',
+  '#7d4a2d','#1a7d6b','#5c1a6b','#6b7d1a','#2a5c8a','#4a6b2d'
+];
+const colorMap = {};
+function getColor(name) {
+  if (!colorMap[name]) {
+    const n = Object.keys(colorMap).length;
+    colorMap[name] = COLORS[n % COLORS.length];
+  }
+  return colorMap[name];
+}
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+(function init() {
+  if (SB_URL && SB_KEY) {
+    document.getElementById('setupScreen').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+  }
+  const t = new Date();
+  calYear = t.getFullYear(); calMonth = t.getMonth();
+  document.getElementById('newStart').min = fmt(t);
+  document.getElementById('newEnd').min = fmt(t);
+  document.getElementById('newStart').addEventListener('change', () => {
+    document.getElementById('newEnd').min = document.getElementById('newStart').value;
+    calSelStart = null; renderCalendar();
+  });
+  document.getElementById('newEnd').addEventListener('change', () => { calSelStart = null; renderCalendar(); });
+  document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  document.getElementById('loginUser').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); }));
+})();
+
+// ════════════════════════════════════════════════════════
+//  AUTH
+// ════════════════════════════════════════════════════════
+async function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if (!u||!p) return showEl('loginErr','Please enter username and password.','error');
+  try {
+    const rows = await db.getUser(u);
+    const user = rows.find(r => r.username.toLowerCase()===u.toLowerCase() && r.password===p);
+    if (!user) return showEl('loginErr','Incorrect username or password.','error');
+    currentUser = user;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appScreen').style.display = 'block';
+    document.getElementById('newStart').value = '';
+    document.getElementById('newEnd').value = '';
+    document.getElementById('headerName').textContent = currentUser.username;
+    document.getElementById('headerAdmin').style.display = currentUser.is_admin ? '' : 'none';
+    document.getElementById('tab-admin-btn').style.display = currentUser.is_admin ? '' : 'none';
+    await loadAll();
+  } catch(e) { showEl('loginErr', 'Connection error: ' + e.message, 'error'); }
+}
+
+function resetConnection() {
+  localStorage.removeItem('sb_url'); localStorage.removeItem('sb_key');
+  SB_URL = ''; SB_KEY = '';
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('setupScreen').style.display = 'flex';
+  document.getElementById('sbUrl').value = ''; document.getElementById('sbKey').value = '';
+}
+
+function doLogout() {
+  currentUser = null; allBookings = []; allRequests = []; allUsers = [];
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+// ════════════════════════════════════════════════════════
+//  LOAD ALL DATA
+// ════════════════════════════════════════════════════════
+async function loadAll() {
+  try {
+    [allBookings, allRequests, allUsers] = await Promise.all([
+      db.getBookings(), db.getRequests(), db.getUsers()
+    ]);
+    renderAll();
+  } catch(e) { console.error('Load error', e); }
+}
+
+function renderAll() {
+  renderMyBookings();
+  renderAllBookings();
+  renderCalendar();
+  renderNotifications();
+  if (currentUser?.is_admin) renderAdmin();
+  updateNotifBadge();
+}
+
+// ════════════════════════════════════════════════════════
+//  BOOKINGS
+// ════════════════════════════════════════════════════════
+async function addBooking() {
+  const start = document.getElementById('newStart').value;
+  const end   = document.getElementById('newEnd').value;
+  if (!start||!end) return showEl('bookErr','Please select both dates.','error');
+  if (end < start)  return showEl('bookErr','Check-out must be after check-in.','error');
+  try {
+    await db.addBooking({ username: currentUser.username, start_date: start, end_date: end });
+    calSelStart = null;
+    showEl('bookErr','','error');
+    showEl('bookOk',`✓ Reserved: ${nice(start)} → ${nice(end)}`,'success');
+    setTimeout(()=>showEl('bookOk','','success'), 3500);
+    await loadAll();
+  } catch(e) { showEl('bookErr','Error saving: '+e.message,'error'); }
+}
+
+function renderMyBookings() {
+  const el = document.getElementById('myList');
+  const mine = allBookings.filter(b=>b.username===currentUser.username);
+  if (!mine.length) { el.innerHTML=`<div class="empty-state"><span>🌲</span>No reservations yet.</div>`; return; }
+  el.innerHTML = mine.map(b => `
+    <div class="booking-item">
+      <div class="booking-dot" style="background:${getColor(b.username)}"></div>
+      <div class="booking-info">
+        <div class="booking-name">${b.username}</div>
+        <div class="booking-dates">${nice(b.start_date)} → ${nice(b.end_date)} · ${nights(b.start_date,b.end_date)} night${nights(b.start_date,b.end_date)!==1?'s':''}</div>
+      </div>
+      <div class="booking-actions">
+        <button class="btn-sm btn-edit" onclick="openEdit(${b.id})">Edit</button>
+        <button class="btn-sm btn-del" onclick="deleteBooking(${b.id})">Remove</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderAllBookings() {
+  const el = document.getElementById('allList');
+  const notice = document.getElementById('conflictNotice');
+  const conflicts = getConflictIds(allBookings);
+  notice.style.display = conflicts.size ? '' : 'none';
+  if (!allBookings.length) { el.innerHTML=`<div class="empty-state"><span>🌊</span>No reservations yet.</div>`; return; }
+  el.innerHTML = allBookings.map(b => {
+    const isOwn = b.username === currentUser.username;
+    const hasPending = allRequests.some(r=>r.booking_id===b.id && r.status==='pending' && r.from_user===currentUser.username);
+    return `
+    <div class="booking-item${conflicts.has(b.id)?' conflict':''}">
+      <div class="booking-dot" style="background:${getColor(b.username)}"></div>
+      <div class="booking-info">
+        <div class="booking-name">${b.username}</div>
+        <div class="booking-dates">${nice(b.start_date)} → ${nice(b.end_date)} · ${nights(b.start_date,b.end_date)} night${nights(b.start_date,b.end_date)!==1?'s':''}</div>
+      </div>
+      <div class="booking-actions">
+        ${conflicts.has(b.id)?'<span class="conflict-badge">⚠ Conflict</span>':''}
+        ${!isOwn && !hasPending ? `<button class="btn-sm btn-request" onclick="openRequest(${b.id})">Request Change</button>` : ''}
+        ${!isOwn && hasPending  ? `<span class="status-pill pending" style="font-size:0.7rem">Request Sent</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  EDIT BOOKING
+// ════════════════════════════════════════════════════════
+let editingId = null;
+function openEdit(id) {
+  const b = allBookings.find(x=>x.id===id); if(!b) return;
+  editingId = id;
+  document.getElementById('editStart').value = b.start_date;
+  document.getElementById('editEnd').value   = b.end_date;
+  showEl('editErr','','error');
+  openModal('editModal');
+}
+async function saveEdit() {
+  const start = document.getElementById('editStart').value;
+  const end   = document.getElementById('editEnd').value;
+  if (!start||!end) return showEl('editErr','Please select both dates.','error');
+  if (end < start)  return showEl('editErr','Check-out must be after check-in.','error');
+  try {
+    await db.updateBooking(editingId, {start_date:start, end_date:end});
+    closeModal('editModal');
+    await loadAll();
+  } catch(e) { showEl('editErr','Error: '+e.message,'error'); }
+}
+
+async function deleteBooking(id) {
+  if (!confirm('Remove this reservation?')) return;
+  try {
+    // also delete related requests
+    const related = allRequests.filter(r=>r.booking_id===id);
+    await Promise.all(related.map(r=>db.deleteRequest(r.id)));
+    await db.deleteBooking(id);
+    await loadAll();
+  } catch(e) { alert('Error: '+e.message); }
+}
+
+// ════════════════════════════════════════════════════════
+//  DATE-CHANGE REQUESTS
+// ════════════════════════════════════════════════════════
+let requestingBookingId = null;
+function openRequest(bookingId) {
+  const b = allBookings.find(x=>x.id===bookingId); if(!b) return;
+  requestingBookingId = bookingId;
+  document.getElementById('requestTargetName').textContent = b.username;
+  document.getElementById('requestCurrentDates').value = `${nice(b.start_date)} → ${nice(b.end_date)}`;
+  document.getElementById('requestNewStart').value = b.start_date;
+  document.getElementById('requestNewEnd').value   = b.end_date;
+  document.getElementById('requestMsg').value = '';
+  showEl('requestErr','','error');
+  openModal('requestModal');
+}
+async function sendRequest() {
+  const ns  = document.getElementById('requestNewStart').value;
+  const ne  = document.getElementById('requestNewEnd').value;
+  const msg = document.getElementById('requestMsg').value.trim();
+  if (!ns||!ne) return showEl('requestErr','Please select proposed new dates.','error');
+  if (ne < ns)  return showEl('requestErr','End date must be after start date.','error');
+  if (!msg)     return showEl('requestErr','Please include a message.','error');
+  const b = allBookings.find(x=>x.id===requestingBookingId);
+  try {
+    await db.addRequest({
+      booking_id:    requestingBookingId,
+      from_user:     currentUser.username,
+      to_user:       b.username,
+      proposed_start: ns,
+      proposed_end:   ne,
+      message:       msg,
+      status:        'pending'
+    });
+    closeModal('requestModal');
+    await loadAll();
+  } catch(e) { showEl('requestErr','Error: '+e.message,'error'); }
+}
+
+let decliningRequestId = null;
+function openDecline(requestId) {
+  decliningRequestId = requestId;
+  document.getElementById('declineMsg').value = '';
+  openModal('declineModal');
+}
+async function confirmDecline() {
+  const reply = document.getElementById('declineMsg').value.trim();
+  try {
+    await db.updateRequest(decliningRequestId, {status:'declined', reply_message: reply||null});
+    closeModal('declineModal');
+    await loadAll();
+  } catch(e) { alert('Error: '+e.message); }
+}
+
+async function acceptRequest(requestId) {
+  const req = allRequests.find(r=>r.id===requestId); if(!req) return;
+  if (!confirm(`Accept and update reservation to ${nice(req.proposed_start)} → ${nice(req.proposed_end)}?`)) return;
+  try {
+    await db.updateBooking(req.booking_id, {start_date:req.proposed_start, end_date:req.proposed_end});
+    await db.updateRequest(requestId, {status:'accepted'});
+    await loadAll();
+  } catch(e) { alert('Error: '+e.message); }
+}
+
+function renderNotifications() {
+  // Incoming — requests TO me
+  const incoming = allRequests.filter(r=>r.to_user===currentUser.username);
+  const inEl = document.getElementById('notifIncoming');
+  if (!incoming.length) {
+    inEl.innerHTML=`<div class="empty-state"><span>📬</span>No incoming requests.</div>`;
+  } else {
+    inEl.innerHTML = `<div class="card-title" style="font-size:1rem;margin-bottom:12px;">📥 Incoming Requests</div>` +
+      incoming.map(r => {
+        const b = allBookings.find(x=>x.id===r.booking_id);
+        const bookingInfo = b ? `${nice(b.start_date)} → ${nice(b.end_date)}` : 'Reservation removed';
+        return `
+        <div class="notif-item ${r.status}">
+          <div class="notif-header">
+            <span class="notif-title">From ${r.from_user}</span>
+            <span class="notif-time">${timeAgo(r.created_at)}</span>
+          </div>
+          <div class="notif-body">"${r.message}"</div>
+          <div class="notif-dates">Your booking: ${bookingInfo}<br>Proposed: ${nice(r.proposed_start)} → ${nice(r.proposed_end)}</div>
+          <div class="notif-actions">
+            ${r.status==='pending' ? `
+              <button class="btn-sm btn-accept" onclick="acceptRequest(${r.id})">✓ Accept</button>
+              <button class="btn-sm btn-decline" onclick="openDecline(${r.id})">✗ Decline</button>
+            ` : `<span class="status-pill ${r.status}">${r.status==='accepted'?'✓ Accepted':'✗ Declined'}</span>`}
+            ${r.reply_message ? `<span style="font-size:0.78rem;color:var(--muted);margin-left:4px;">Reply: "${r.reply_message}"</span>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+  }
+
+  // Outgoing — requests FROM me
+  const outgoing = allRequests.filter(r=>r.from_user===currentUser.username);
+  const outEl = document.getElementById('notifOutgoing');
+  if (!outgoing.length) {
+    outEl.innerHTML=`<div class="empty-state"><span>📤</span>No outgoing requests.</div>`;
+  } else {
+    outEl.innerHTML = outgoing.map(r => {
+      const b = allBookings.find(x=>x.id===r.booking_id);
+      const bookingInfo = b ? `${b.username}: ${nice(b.start_date)} → ${nice(b.end_date)}` : 'Reservation removed';
+      return `
+      <div class="notif-item ${r.status}">
+        <div class="notif-header">
+          <span class="notif-title">To ${r.to_user}</span>
+          <span class="status-pill ${r.status}">${r.status==='pending'?'⏳ Pending':r.status==='accepted'?'✓ Accepted':'✗ Declined'}</span>
+        </div>
+        <div class="notif-body">"${r.message}"</div>
+        <div class="notif-dates">Their booking: ${bookingInfo}<br>Proposed: ${nice(r.proposed_start)} → ${nice(r.proposed_end)}</div>
+        ${r.reply_message ? `<div style="font-size:0.78rem;color:var(--muted);margin-top:4px;">Their reply: "${r.reply_message}"</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+}
+
+function updateNotifBadge() {
+  const pendingIncoming = allRequests.filter(r=>r.to_user===currentUser.username && r.status==='pending').length;
+  const dot = document.getElementById('notifDot');
+  dot.textContent = pendingIncoming;
+  dot.style.display = pendingIncoming > 0 ? '' : 'none';
+}
+
+// ════════════════════════════════════════════════════════
+//  CALENDAR
+// ════════════════════════════════════════════════════════
+function clickCalDay(ds) {
+  if (!calSelStart) {
+    calSelStart = ds;
+    document.getElementById('newStart').value = ds;
+    document.getElementById('newEnd').value = ds;
+    document.getElementById('newEnd').min = ds;
+  } else if (ds < calSelStart) {
+    calSelStart = ds;
+    document.getElementById('newStart').value = ds;
+    document.getElementById('newEnd').value = ds;
+    document.getElementById('newEnd').min = ds;
+  } else {
+    document.getElementById('newEnd').value = ds;
+    calSelStart = null;
+  }
+  renderCalendar();
+}
+
+function changeMonth(d) {
+  calMonth+=d;
+  if(calMonth>11){calMonth=0;calYear++;} if(calMonth<0){calMonth=11;calYear--;}
+  renderCalendar();
+}
+
+function getHolidays(year) {
+  const h={};
+  const add=(m,d,n)=>{h[`${year}-${pad(m)}-${pad(d)}`]=n;};
+  add(1,1,"New Year's 🎉"); add(6,19,"Juneteenth"); add(7,4,"July 4th 🎆");
+  add(11,11,"Veterans Day"); add(12,25,"Christmas 🎄"); add(12,31,"New Year's Eve");
+  add(1,nth(year,1,1,3),"MLK Day"); add(2,nth(year,2,1,3),"Presidents' Day");
+  add(5,last(year,5,1),"Memorial Day 🇺🇸"); add(9,nth(year,9,1,1),"Labor Day");
+  add(10,nth(year,10,1,2),"Columbus Day"); add(11,nth(year,11,4,4),"Thanksgiving 🦃");
+  return h;
+}
+function nth(y,m,dow,n){let c=0;for(let d=1;d<=31;d++){const dt=new Date(y,m-1,d);if(dt.getMonth()!==m-1)break;if(dt.getDay()===dow){c++;if(c===n)return d;}}}
+function last(y,m,dow){let l=null;for(let d=1;d<=31;d++){const dt=new Date(y,m-1,d);if(dt.getMonth()!==m-1)break;if(dt.getDay()===dow)l=d;}return l;}
+
+function renderCalendar() {
+  const grid=document.getElementById('calGrid');
+  const label=document.getElementById('calLabel');
+  if(!grid)return;
+  grid.innerHTML='';
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  label.textContent=`${MONTHS[calMonth]} ${calYear}`;
+  DAYS.forEach(d=>{const e=document.createElement('div');e.className='cal-day-name';e.textContent=d;grid.appendChild(e);});
+  const holidays=getHolidays(calYear);
+  const today=new Date();today.setHours(0,0,0,0);
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const dim=new Date(calYear,calMonth+1,0).getDate();
+  const prev=new Date(calYear,calMonth,0).getDate();
+  const selS=document.getElementById('newStart').value;
+  const selE=document.getElementById('newEnd').value;
+  for(let i=firstDay-1;i>=0;i--){const c=mkCell(prev-i);c.classList.add('other-month');grid.appendChild(c);}
+  for(let d=1;d<=dim;d++){
+    const date=new Date(calYear,calMonth,d);
+    const ds=fmt(date);
+    const hol=holidays[ds];
+    const c=mkCell(d);
+    if(date<today)c.classList.add('past');
+    else{c.classList.add('clickable');c.addEventListener('click',()=>clickCalDay(ds));}
+    if(date.getTime()===today.getTime())c.classList.add('today');
+    if(hol){c.classList.add('holiday');const s=document.createElement('span');s.className='holiday-label';s.textContent=hol;c.appendChild(s);}
+    if(ds===selS||ds===selE)c.classList.add('cal-selected');
+    else if(selS&&selE&&ds>selS&&ds<selE)c.classList.add('cal-in-range');
+    allBookings.filter(b=>b.start_date<=ds&&b.end_date>=ds).forEach(b=>{
+      const chip=document.createElement('span');chip.className='booking-chip';
+      chip.textContent=shortName(b.username);chip.style.background=getColor(b.username);chip.style.color='#fff';
+      chip.title=`${b.username}: ${nice(b.start_date)} → ${nice(b.end_date)}`;
+      c.appendChild(chip);
+    });
+    grid.appendChild(c);
+  }
+  const rem=(firstDay+dim)%7===0?0:7-(firstDay+dim)%7;
+  for(let i=1;i<=rem;i++){const c=mkCell(i);c.classList.add('other-month');grid.appendChild(c);}
+  const names=[...new Set(allBookings.map(b=>b.username))];
+  document.getElementById('calLegend').innerHTML=
+    names.map(n=>`<div class="legend-item"><div class="legend-dot" style="background:${getColor(n)}"></div><span>${n}</span></div>`).join('')+
+    `<div class="legend-item"><div class="legend-hol"></div><span>Holiday</span></div>`+
+    (selS?`<div class="legend-item"><div class="legend-dot" style="background:var(--lake-deep)"></div><span>Your selection</span></div>`:'');
+}
+function mkCell(d){const c=document.createElement('div');c.className='cal-cell';const dn=document.createElement('div');dn.className='cal-date';dn.textContent=d;c.appendChild(dn);return c;}
+
+// ════════════════════════════════════════════════════════
+//  ADMIN
+// ════════════════════════════════════════════════════════
+async function addUser() {
+  const name=document.getElementById('newUser').value.trim();
+  const pass=document.getElementById('newPass').value.trim();
+  const isAdmin=document.getElementById('newAdmin').checked;
+  if(!name||!pass) return showEl('addUserErr','Please fill in name and password.','error');
+  if(allUsers.find(u=>u.username.toLowerCase()===name.toLowerCase())) return showEl('addUserErr','Username already exists.','error');
+  try {
+    await db.createUser({username:name, password:pass, is_admin:isAdmin});
+    document.getElementById('newUser').value=''; document.getElementById('newPass').value=''; document.getElementById('newAdmin').checked=false;
+    showEl('addUserErr','','error');
+    showEl('addUserOk',`✓ ${name} added.`,'success');
+    setTimeout(()=>showEl('addUserOk','','success'),3000);
+    await loadAll();
+  } catch(e) { showEl('addUserErr','Error: '+e.message,'error'); }
+}
+
+let resettingUserId=null, resettingUserName='';
+function openReset(id,name){resettingUserId=id;resettingUserName=name;document.getElementById('resetForUser').textContent=name;document.getElementById('resetNewPass').value='';showEl('resetErr','','error');openModal('resetModal');}
+async function saveReset(){
+  const p=document.getElementById('resetNewPass').value.trim();
+  if(!p) return showEl('resetErr','Please enter a password.','error');
+  try { await db.updateUser(resettingUserId,{password:p}); closeModal('resetModal'); await loadAll(); }
+  catch(e){ showEl('resetErr','Error: '+e.message,'error'); }
+}
+
+async function removeUser(id,name){
+  if(name===currentUser.username) return alert("You can't remove your own account.");
+  if(!confirm(`Remove ${name} and all their bookings?`)) return;
+  try {
+    const userBookings=allBookings.filter(b=>b.username===name);
+    await Promise.all(userBookings.map(b=>db.deleteBooking(b.id)));
+    const userRequests=allRequests.filter(r=>r.from_user===name||r.to_user===name);
+    await Promise.all(userRequests.map(r=>db.deleteRequest(r.id)));
+    await db.deleteUser(id);
+    await loadAll();
+  } catch(e){ alert('Error: '+e.message); }
+}
+
+async function adminDeleteBooking(id){
+  if(!confirm('Remove this reservation?')) return;
+  try {
+    const rel=allRequests.filter(r=>r.booking_id===id);
+    await Promise.all(rel.map(r=>db.deleteRequest(r.id)));
+    await db.deleteBooking(id);
+    await loadAll();
+  } catch(e){ alert('Error: '+e.message); }
+}
+
+function renderAdmin(){
+  // Users
+  document.getElementById('usersList').innerHTML=allUsers.map(u=>`
+    <div class="user-item">
+      <span class="uname">${u.username}</span>
+      <span class="role-tag ${u.is_admin?'admin':'member'}">${u.is_admin?'Admin':'Member'}</span>
+      <div class="booking-actions">
+        <button class="btn-sm btn-edit" onclick="openReset(${u.id},'${u.username}')">Reset PW</button>
+        ${u.username!==currentUser.username?`<button class="btn-sm btn-del" onclick="removeUser(${u.id},'${u.username}')">Remove</button>`:''}
+      </div>
+    </div>`).join('') || `<div class="empty-state"><span>👥</span>No members yet.</div>`;
+
+  // Conflicts
+  const conflicts=getConflictIds(allBookings);
+  const conflicted=allBookings.filter(b=>conflicts.has(b.id));
+  document.getElementById('conflictsList').innerHTML = conflicted.length
+    ? conflicted.map(b=>`
+      <div class="booking-item conflict">
+        <div class="booking-dot" style="background:${getColor(b.username)}"></div>
+        <div class="booking-info"><div class="booking-name">${b.username}</div><div class="booking-dates">${nice(b.start_date)} → ${nice(b.end_date)}</div></div>
+        <span class="conflict-badge">⚠ Conflict</span>
+        <div class="booking-actions">
+          <button class="btn-sm btn-edit" onclick="openEdit(${b.id})">Edit</button>
+          <button class="btn-sm btn-del" onclick="adminDeleteBooking(${b.id})">Remove</button>
+        </div>
+      </div>`).join('')
+    : `<div class="empty-state"><span>✅</span>No conflicts!</div>`;
+
+  // All bookings admin view
+  document.getElementById('adminBookings').innerHTML = allBookings.length
+    ? allBookings.map(b=>`
+      <div class="booking-item${conflicts.has(b.id)?' conflict':''}">
+        <div class="booking-dot" style="background:${getColor(b.username)}"></div>
+        <div class="booking-info"><div class="booking-name">${b.username}</div><div class="booking-dates">${nice(b.start_date)} → ${nice(b.end_date)} · ${nights(b.start_date,b.end_date)} nights</div></div>
+        ${conflicts.has(b.id)?'<span class="conflict-badge">⚠</span>':''}
+        <div class="booking-actions">
+          <button class="btn-sm btn-edit" onclick="openEdit(${b.id})">Edit</button>
+          <button class="btn-sm btn-del" onclick="adminDeleteBooking(${b.id})">Remove</button>
+        </div>
+      </div>`).join('')
+    : `<div class="empty-state"><span>🌊</span>No reservations.</div>`;
+}
+
+// ════════════════════════════════════════════════════════
+//  TABS
+// ════════════════════════════════════════════════════════
+function showTab(name){
+  ['calendar','all','notif','admin'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===name?'':'none';
+    const btn=document.getElementById('tab-'+t+'-btn');
+    if(btn) btn.classList.toggle('active',t===name);
+  });
+  if(name==='calendar') renderCalendar();
+  if(name==='admin') renderAdmin();
+}
+
+// ════════════════════════════════════════════════════════
+//  MODAL HELPERS
+// ════════════════════════════════════════════════════════
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+// ════════════════════════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════════════════════════
+function fmt(d){return d instanceof Date?d.toISOString().split('T')[0]:d;}
+function pad(n){return String(n).padStart(2,'0');}
+function nice(s){if(!s)return'';const[y,m,d]=s.split('-');const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return`${M[+m-1]} ${+d}, ${y}`;}
+function nights(s,e){return Math.round((new Date(e)-new Date(s))/864e5);}
+function shortName(n){const p=n.trim().split(' ');return p.length>1?p[p.length-1]:n;}
+function timeAgo(ts){if(!ts)return'';const s=Math.floor((Date.now()-new Date(ts))/1000);if(s<60)return'just now';if(s<3600)return`${Math.floor(s/60)}m ago`;if(s<86400)return`${Math.floor(s/3600)}h ago`;return`${Math.floor(s/86400)}d ago`;}
+function getConflictIds(bookings){
+  const ids=new Set();
+  for(let i=0;i<bookings.length;i++) for(let j=i+1;j<bookings.length;j++)
+    if(bookings[i].end_date>=bookings[j].start_date&&bookings[j].end_date>=bookings[i].start_date)
+      {ids.add(bookings[i].id);ids.add(bookings[j].id);}
+  return ids;
+}
+function showEl(id,msg,type){const e=document.getElementById(id);if(!e)return;e.textContent=msg;e.className=`msg ${type}`;e.style.display=msg?'block':'none';}
+</script>
+</body>
+</html>
