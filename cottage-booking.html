@@ -166,7 +166,7 @@ main{max-width:1000px;margin:0 auto;padding:0 16px 80px;}
 
 /* ─── CALENDAR ─── */
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.cal-nav-btn{background:var(--sky);border:1.5px solid var(--border);border-radius:8px;width:32px;height:32px;font-size:1.1rem;cursor:pointer;color:var(--lake-deep);display:flex;align-items:center;justify-content:center;transition:background 0.15s;}
+.cal-nav-btn{background:var(--sky);border:1.5px solid var(--border);border-radius:8px;width:38px;height:38px;font-size:1.1rem;cursor:pointer;color:var(--lake-deep);display:flex;align-items:center;justify-content:center;transition:background 0.15s;}
 .cal-nav-btn:hover{background:var(--lake-light);border-color:var(--lake);}
 .cal-month{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:var(--lake-deep);}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
@@ -178,7 +178,16 @@ main{max-width:1000px;margin:0 auto;padding:0 16px 80px;}
 .cal-cell.holiday{background:linear-gradient(135deg,#fffbe8,#fef3cc);border-color:#e8c84a;}
 .cal-date{font-size:0.75rem;font-weight:800;color:var(--lake-deep);margin-bottom:2px;}
 .holiday-label{font-size:0.57rem;color:var(--bridge);font-weight:800;text-transform:uppercase;letter-spacing:0.03em;line-height:1.2;display:block;margin-bottom:2px;}
-.booking-chip{font-size:0.63rem;font-weight:700;padding:1px 5px;border-radius:20px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block;}
+.cal-bars{display:flex;flex-direction:column;gap:2px;margin-top:2px;}
+.cal-bar{height:5px;border-radius:3px;}
+.cal-more{font-size:0.68rem;font-weight:800;color:var(--muted);line-height:1;margin-top:1px;}
+.cal-hint{font-size:0.82rem;font-weight:600;color:var(--lake-mid);margin-bottom:10px;}
+.cal-detail{margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--sky);border:1px solid var(--border);display:none;}
+.cal-detail.show{display:block;}
+.cal-detail-date{font-weight:800;font-size:0.9rem;color:var(--lake-deep);margin-bottom:4px;}
+.cal-detail-hol{font-size:0.8rem;font-weight:800;color:var(--bridge);margin-bottom:6px;}
+.cal-detail-row{display:flex;align-items:center;gap:9px;padding:5px 0;}
+.cal-detail-empty{font-size:0.85rem;color:var(--muted);}
 .legend{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
 .legend-item{display:flex;align-items:center;gap:4px;font-size:0.76rem;color:var(--muted);}
 .legend-dot{width:8px;height:8px;border-radius:50%;}
@@ -238,13 +247,63 @@ main{max-width:1000px;margin:0 auto;padding:0 16px 80px;}
 .cal-cell.cal-selected .cal-date{color:white;}
 .cal-cell.cal-selected .holiday-label{color:rgba(255,255,255,0.75);}
 
+/* ─── TAB LABELS (icon + text) ─── */
+.tab-lbl{margin-left:5px;}
+
+/* ─── TOUCH FEEDBACK ─── */
+.btn-sm:active,.cal-nav-btn:active{transform:scale(0.96);}
+.cal-cell.clickable:active{background:var(--lake-light);}
+
 @media(max-width:600px){
-  .header-inner{flex-wrap:wrap;}
+  /* Prevent iOS auto-zoom when focusing a field (needs >=16px) */
+  input,select,textarea{font-size:16px;}
+
+  /* Header — keep on one compact row, clear the notch */
+  .header-inner{padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top));}
+  .header-title{font-size:1.15rem;}
+  .header-sub{display:none;}
+  .header-icon{font-size:1.4rem;}
+  .bridge-strip{height:14px;}
+  .user-badge{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.72rem;}
+
+  /* Tabs become a fixed bottom navigation bar */
+  .tab-bar{
+    position:fixed;bottom:0;left:0;right:0;z-index:200;margin:0;
+    padding:5px 4px calc(5px + env(safe-area-inset-bottom));gap:2px;
+    background:white;border-top:1px solid var(--border);
+    box-shadow:0 -2px 12px rgba(44,110,154,0.12);
+  }
+  .tab-btn{flex-direction:column;gap:2px;border:none;border-radius:10px;padding:6px 2px;font-size:0.7rem;min-height:52px;}
+  .tab-btn.active{background:var(--lake-light);color:var(--lake-deep);}
+  .tab-ico{font-size:1.35rem;line-height:1;}
+  .tab-lbl{margin-left:0;}
+  .notif-dot{top:4px;right:calc(50% - 20px);}
+
+  /* Main content clears the bottom nav */
+  main{padding:0 12px calc(78px + env(safe-area-inset-bottom));}
+  .tab-panel{padding:18px 14px;border-radius:16px;margin-top:14px;}
   .form-row{flex-direction:column;}
-  .cal-cell{min-height:50px;}
-  .booking-chip{font-size:0.57rem;}
-  .tab-btn{font-size:0.74rem;padding:8px 3px;}
-  .tab-panel{padding:18px 14px;}
+
+  /* Full-width primary actions, bigger tap targets */
+  .btn-primary,.btn-green{width:100%;min-height:48px;}
+  .btn-sm{padding:9px 14px;font-size:0.8rem;min-height:40px;}
+
+  /* Booking / user rows stack, actions on their own line */
+  .booking-item,.user-item{flex-wrap:wrap;}
+  .booking-actions{flex-basis:100%;justify-content:flex-start;margin-top:4px;}
+
+  /* Calendar */
+  .cal-cell{min-height:58px;}
+  .cal-day-name{font-size:0.72rem;}
+  .cal-nav-btn{width:44px;height:44px;}
+  .holiday-label{display:none;}
+
+  /* Modals slide up as bottom sheets */
+  .modal-overlay{align-items:flex-end;padding:0;}
+  .modal{max-width:100%;border-radius:20px 20px 0 0;max-height:90vh;overflow-y:auto;
+    padding:24px 20px calc(24px + env(safe-area-inset-bottom));transform:translateY(100%);}
+  .modal-overlay.open .modal{transform:translateY(0);}
+  .btn-cancel,.btn-save{min-height:48px;}
 }
 </style>
 </head>
@@ -347,12 +406,10 @@ main{max-width:1000px;margin:0 auto;padding:0 16px 80px;}
   </header>
 
   <div class="tab-bar">
-    <button class="tab-btn active" id="tab-calendar-btn" onclick="showTab('calendar')">🗓 Calendar</button>
-    <button class="tab-btn" id="tab-all-btn" onclick="showTab('all')">📋 All Stays</button>
-    <button class="tab-btn" id="tab-notif-btn" onclick="showTab('notif')">
-      🔔 Requests<span class="notif-dot" id="notifDot"></span>
-    </button>
-    <button class="tab-btn" id="tab-admin-btn" onclick="showTab('admin')" style="display:none">⚙️ Admin</button>
+    <button class="tab-btn active" id="tab-calendar-btn" onclick="showTab('calendar')"><span class="tab-ico">🗓</span><span class="tab-lbl">Calendar</span></button>
+    <button class="tab-btn" id="tab-all-btn" onclick="showTab('all')"><span class="tab-ico">📋</span><span class="tab-lbl">Stays</span></button>
+    <button class="tab-btn" id="tab-notif-btn" onclick="showTab('notif')"><span class="tab-ico">🔔</span><span class="tab-lbl">Requests</span><span class="notif-dot" id="notifDot"></span></button>
+    <button class="tab-btn" id="tab-admin-btn" onclick="showTab('admin')" style="display:none"><span class="tab-ico">⚙️</span><span class="tab-lbl">Admin</span></button>
   </div>
 
   <main>
@@ -377,7 +434,9 @@ main{max-width:1000px;margin:0 auto;padding:0 16px 80px;}
           <button class="cal-nav-btn" onclick="changeMonth(1)">&#8250;</button>
         </div>
       </div>
+      <div class="cal-hint" id="calHint"></div>
       <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-detail" id="calDetail"></div>
       <div class="legend" id="calLegend"></div>
 
       <div class="divider"></div>
@@ -561,7 +620,7 @@ let currentUser = null;
 let allBookings = [];
 let allRequests = [];
 let allUsers = [];
-let calYear, calMonth, calSelStart = null;
+let calYear, calMonth, calSelStart = null, calDetailDay = null;
 
 const COLORS = [
   '#2d7d46','#1a6b8a','#9a4a1a','#6b2d7d','#7d6b1a',
@@ -897,12 +956,39 @@ function clickCalDay(ds) {
     calSelStart = null;
   }
   renderCalendar();
+  showDayDetail(ds);
 }
 
 function changeMonth(d) {
   calMonth+=d;
   if(calMonth>11){calMonth=0;calYear++;} if(calMonth<0){calMonth=11;calYear--;}
+  calDetailDay = null;
+  document.getElementById('calDetail').classList.remove('show');
   renderCalendar();
+}
+
+// Show who's booked on a tapped day, plus holiday name (replaces hover tooltips on touch)
+function showDayDetail(ds) {
+  calDetailDay = ds;
+  const el = document.getElementById('calDetail');
+  const hol = getHolidays(+ds.slice(0,4))[ds];
+  const covering = allBookings.filter(b=>b.start_date<=ds && b.end_date>=ds);
+  let html = `<div class="cal-detail-date">${niceFull(ds)}</div>`;
+  if (hol) html += `<div class="cal-detail-hol">${hol}</div>`;
+  if (covering.length) {
+    html += covering.map(b=>`
+      <div class="cal-detail-row">
+        <span class="booking-dot" style="background:${getColor(b.username)}"></span>
+        <div class="booking-info">
+          <div class="booking-name">${b.username}</div>
+          <div class="booking-dates">${nice(b.start_date)} → ${nice(b.end_date)} · ${nights(b.start_date,b.end_date)} night${nights(b.start_date,b.end_date)!==1?'s':''}</div>
+        </div>
+      </div>`).join('');
+  } else {
+    html += `<div class="cal-detail-empty">No reservations on this day.</div>`;
+  }
+  el.innerHTML = html;
+  el.classList.add('show');
 }
 
 function getHolidays(year) {
@@ -934,24 +1020,34 @@ function renderCalendar() {
   const prev=new Date(calYear,calMonth,0).getDate();
   const selS=document.getElementById('newStart').value;
   const selE=document.getElementById('newEnd').value;
+  const hintEl=document.getElementById('calHint');
+  if(calSelStart) hintEl.textContent=`Check-in ${nice(calSelStart)} set — now tap your check-out date.`;
+  else if(selS&&selE) hintEl.textContent=`Selected ${nice(selS)} → ${nice(selE)}. Tap “Reserve Dates” to book.`;
+  else hintEl.textContent='Tap a date to set check-in, then tap again for check-out.';
   for(let i=firstDay-1;i>=0;i--){const c=mkCell(prev-i);c.classList.add('other-month');grid.appendChild(c);}
   for(let d=1;d<=dim;d++){
     const date=new Date(calYear,calMonth,d);
     const ds=fmt(date);
     const hol=holidays[ds];
     const c=mkCell(d);
-    if(date<today)c.classList.add('past');
+    if(date<today){c.classList.add('past');c.style.cursor='pointer';c.addEventListener('click',()=>showDayDetail(ds));}
     else{c.classList.add('clickable');c.addEventListener('click',()=>clickCalDay(ds));}
     if(date.getTime()===today.getTime())c.classList.add('today');
     if(hol){c.classList.add('holiday');const s=document.createElement('span');s.className='holiday-label';s.textContent=hol;c.appendChild(s);}
     if(ds===selS||ds===selE)c.classList.add('cal-selected');
     else if(selS&&selE&&ds>selS&&ds<selE)c.classList.add('cal-in-range');
-    allBookings.filter(b=>b.start_date<=ds&&b.end_date>=ds).forEach(b=>{
-      const chip=document.createElement('span');chip.className='booking-chip';
-      chip.textContent=shortName(b.username);chip.style.background=getColor(b.username);chip.style.color='#fff';
-      chip.title=`${b.username}: ${nice(b.start_date)} → ${nice(b.end_date)}`;
-      c.appendChild(chip);
-    });
+    const covering=allBookings.filter(b=>b.start_date<=ds&&b.end_date>=ds);
+    if(covering.length){
+      const bars=document.createElement('div');bars.className='cal-bars';
+      covering.slice(0,3).forEach(b=>{
+        const bar=document.createElement('div');bar.className='cal-bar';
+        bar.style.background=getColor(b.username);
+        bar.title=`${b.username}: ${nice(b.start_date)} → ${nice(b.end_date)}`;
+        bars.appendChild(bar);
+      });
+      if(covering.length>3){const m=document.createElement('div');m.className='cal-more';m.textContent=`+${covering.length-3}`;bars.appendChild(m);}
+      c.appendChild(bars);
+    }
     grid.appendChild(c);
   }
   const rem=(firstDay+dim)%7===0?0:7-(firstDay+dim)%7;
@@ -1083,8 +1179,8 @@ function closeModal(id){document.getElementById(id).classList.remove('open');}
 function fmt(d){return d instanceof Date?d.toISOString().split('T')[0]:d;}
 function pad(n){return String(n).padStart(2,'0');}
 function nice(s){if(!s)return'';const[y,m,d]=s.split('-');const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return`${M[+m-1]} ${+d}, ${y}`;}
+function niceFull(s){if(!s)return'';const dt=new Date(s+'T00:00:00');const W=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];return`${W[dt.getDay()]}, ${nice(s)}`;}
 function nights(s,e){return Math.round((new Date(e)-new Date(s))/864e5);}
-function shortName(n){const p=n.trim().split(' ');return p.length>1?p[p.length-1]:n;}
 function timeAgo(ts){if(!ts)return'';const s=Math.floor((Date.now()-new Date(ts))/1000);if(s<60)return'just now';if(s<3600)return`${Math.floor(s/60)}m ago`;if(s<86400)return`${Math.floor(s/3600)}h ago`;return`${Math.floor(s/86400)}d ago`;}
 function getConflictIds(bookings){
   const ids=new Set();
