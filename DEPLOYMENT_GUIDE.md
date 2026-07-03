@@ -30,7 +30,7 @@ Everything you need to get this live in about 15 minutes, for free.
 
 1. Go to **netlify.com** → sign up (free)
 2. From your dashboard, click **Add new site → Deploy manually**
-3. Drag and drop the `cottage-booking.html` file onto the upload area
+3. Drag and drop the `index.html` file onto the upload area
 4. Netlify gives you a URL like `https://random-name-123.netlify.app`
 
 **Optional — give it a nicer URL:**
@@ -80,7 +80,7 @@ The app will open fullscreen like a native app with its own icon.
 
 ## Updating the App
 
-If you get an updated version of `cottage-booking.html`:
+If you get an updated version of `index.html`:
 1. Go to Netlify → your site → **Deploys**
 2. Drag and drop the new file
 3. Done — all users get the update automatically

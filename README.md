@@ -33,7 +33,7 @@ See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for full step-by-step instructi
 
 **Quick version:**
 1. Create a free [Supabase](https://supabase.com) project and run `SETUP.sql` in the SQL editor
-2. Drag `cottage-booking.html` onto [Netlify](https://netlify.com)
+2. Drag `index.html` onto [Netlify](https://netlify.com)
 3. Open the site, paste in your Supabase URL and anon key
 4. Sign in as `Admin` / `cottage2024` and change the password immediately
 5. Add family members from the Admin tab and share the link
@@ -42,7 +42,7 @@ See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for full step-by-step instructi
 
 ## Updating
 
-When a new version of `cottage-booking.html` is available:
+When a new version of `index.html` is available:
 1. Go to Netlify → your site → **Deploys**
 2. Drag and drop the new file
 3. Done — all users get the update instantly

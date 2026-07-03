@@ -1,13 +1,13 @@
 # Mobile Redesign Requirements — Mackinaw Cottage Booking App
 
-**Target file:** `cottage-booking.html` (single-file app: inline CSS + JS, Supabase REST backend)
+**Target file:** `index.html` (single-file app: inline CSS + JS, Supabase REST backend)
 **Goal:** The app must be fully usable on a phone (360–430px wide) with no pinch-zooming required to read text or tap controls. Desktop layout must continue to work unchanged or improved.
 
 ---
 
 ## 1. Constraints — DO NOT change these
 
-1. Keep everything in the single `cottage-booking.html` file. No build step, no frameworks, no external CSS/JS files.
+1. Keep everything in the single `index.html` file. No build step, no frameworks, no external CSS/JS files.
 2. Do not change any Supabase logic: `sbFetch()`, the `db` object, table names, column names, or request payloads.
 3. Do not change application behavior/business logic: login flow, booking creation, conflict detection, date-change requests, admin functions all work correctly today.
 4. Do not remove the existing color palette (CSS custom properties in `:root`) or the fonts (Cormorant Garamond + Nunito).
