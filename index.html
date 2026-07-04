@@ -259,8 +259,9 @@ main{max-width:1000px;margin:0 auto;padding:0 16px 80px;}
 .cal-cell.clickable:active{background:var(--lake-light);}
 
 @media(max-width:600px){
-  /* Prevent iOS auto-zoom when focusing a field (needs >=16px) */
-  input,select,textarea{font-size:16px;}
+  /* Prevent iOS auto-zoom when focusing a field (needs >=16px).
+     Must match the base .form-group/.setup-inputs specificity to win. */
+  .form-group input,.form-group select,.form-group textarea,.setup-inputs input{font-size:16px;}
 
   /* Header — keep on one compact row, clear the notch */
   .header-inner{padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top));}
