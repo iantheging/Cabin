@@ -1,89 +1,81 @@
-# 🏡 Mackinaw Cottage App — Deployment Guide
+# 🏡 Bond Family Cottage App — Deployment Guide
 
-Everything you need to get this live in about 15 minutes, for free.
+How this app is hosted, updated, and used. Free on every service involved.
 
 ---
 
-## What You'll Set Up
+## What's Set Up
 
 | Service   | Purpose                        | Cost        |
 |-----------|--------------------------------|-------------|
 | Supabase  | Shared database (all bookings) | Free forever|
+| GitHub    | Source of truth for the code   | Free        |
 | Netlify   | Hosts the website              | Free forever|
 
----
-
-## Step 1 — Set Up Supabase (the database)
-
-1. Go to **supabase.com** → click **Start your project** → sign up with GitHub or email
-2. Click **New Project**, give it a name like `mackinaw-cottage`, set a database password, pick any region
-3. Wait ~2 minutes for it to provision
-4. Go to **SQL Editor** (left sidebar) → click **New Query**
-5. Open the `SETUP.sql` file included with this app, paste the entire contents into the editor, and click **Run**
-6. Go to **Settings → API** (left sidebar):
-   - Copy the **Project URL** (looks like `https://abcdefgh.supabase.co`)
-   - Copy the **anon public** key (long string starting with `eyJ...`)
+The whole app is a single file, `index.html`. Netlify is connected to the GitHub repo and **auto-deploys on every push** — there is no manual upload step.
 
 ---
 
-## Step 2 — Deploy to Netlify (the website)
+## Updating the App (the normal workflow)
 
-1. Go to **netlify.com** → sign up (free)
-2. From your dashboard, click **Add new site → Deploy manually**
-3. Drag and drop the `index.html` file onto the upload area
-4. Netlify gives you a URL like `https://random-name-123.netlify.app`
+1. Edit `index.html` (or any file) and commit the change
+2. **Push to the `main` branch on GitHub**
+3. Netlify detects the push and redeploys automatically within a minute or two
+4. Everyone gets the update on their next page load
 
-**Optional — give it a nicer URL:**
-- In Netlify: Site configuration → Change site name → e.g. `mackinaw-cottage`
-- That gives you: `https://mackinaw-cottage.netlify.app`
-- Or buy a custom domain (~$12/yr) like `mackinawcottage.com`
+That's it — **commit + push = live**. You can watch build status in the Netlify dashboard under **Deploys**.
 
 ---
 
-## Step 3 — Connect the App to Supabase
+## Using the App
 
-1. Open your Netlify URL in a browser
-2. You'll see the one-time setup screen — paste in your Supabase **Project URL** and **anon key**
-3. Click **Save & Connect**
-4. Sign in with: **Username:** `Admin` · **Password:** `cottage2024`
-5. **Change the admin password immediately** via Admin → Reset PW
+The Supabase connection is **baked into `index.html`**, so there's no setup screen — the app connects automatically and goes straight to the login page on any device.
 
-> Each family member only needs to do the Supabase setup once on each new device/browser.
-> After that, it goes straight to the login screen.
+1. Open the site
+2. Sign in (default admin: **Username** `Admin` · **Password** `cottage2024`)
+3. **Change the admin password immediately** via Admin → Current Members → Reset PW
+
+> If you ever need to point the app at a different Supabase project, use the **Reconnect to Supabase** link on the login screen — that override is stored in the browser only.
 
 ---
 
-## Step 4 — Add Family Members
+## Add Family Members
 
-1. Sign in as Admin → go to **Admin tab**
+1. Sign in as Admin → go to the **Admin tab**
 2. Add each family member with a username and initial password
-3. Share the Netlify URL and their login credentials with each person
+3. Share the site URL and their login credentials with each person
 
 ---
 
-## Step 5 — Add to Phone Home Screen
+## Add to Phone Home Screen
 
 ### iPhone (Safari):
 1. Open the site in Safari
 2. Tap the **Share** button (box with arrow)
-3. Scroll down → tap **Add to Home Screen**
-4. Name it "Cottage" → tap **Add**
+3. Scroll down → tap **Add to Home Screen** → **Add**
 
 ### Android (Chrome):
 1. Open the site in Chrome
-2. Tap the **⋮ menu** → tap **Add to Home screen**
-3. Tap **Add**
+2. Tap the **⋮ menu** → **Add to Home screen** → **Add**
 
-The app will open fullscreen like a native app with its own icon.
+The app opens fullscreen like a native app.
 
 ---
 
-## Updating the App
+## First-Time Infrastructure Setup (already done — reference only)
 
-If you get an updated version of `index.html`:
-1. Go to Netlify → your site → **Deploys**
-2. Drag and drop the new file
-3. Done — all users get the update automatically
+You only need this if rebuilding from scratch or pointing at a new Supabase project.
+
+**Supabase (database):**
+1. **supabase.com** → New Project → set a database password, pick a region
+2. **SQL Editor** → New Query → paste all of `SETUP.sql` → **Run**
+3. **Settings → API** → copy the **Project URL** and **anon public** key
+4. Put those into the `DEFAULT_SB_URL` / `DEFAULT_SB_KEY` constants near the top of the `<script>` in `index.html` (the anon key is a public, client-side key by design)
+
+**Netlify (hosting):**
+1. **netlify.com** → **Add new site → Import an existing project** → connect the GitHub repo
+2. No build command needed; publish directory is the repo root (it just serves `index.html`)
+3. Optional: Site configuration → Change site name for a nicer `*.netlify.app` URL, or add a custom domain
 
 ---
 
@@ -91,6 +83,7 @@ If you get an updated version of `index.html`:
 
 | Item             | Value                                      |
 |------------------|--------------------------------------------|
+| Deploy           | `git push` to `main` → Netlify auto-deploys|
 | Default admin    | Username: `Admin` · Password: `cottage2024`|
 | Change password  | Admin tab → Current Members → Reset PW     |
 | Add members      | Admin tab → Add Family Member              |
@@ -98,4 +91,4 @@ If you get an updated version of `index.html`:
 
 ---
 
-*Built for the Mackinaw Family Cottage · Mackinaw City, Michigan* 🌉
+*Built for the Bond Family Cottage · Mackinaw City, Michigan* 🌉

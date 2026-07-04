@@ -1,4 +1,4 @@
-# 🏡 Mackinaw Cottage
+# 🏡 Bond Family Cottage
 
 A shared booking calendar for the family cottage in Mackinaw City, Michigan. Built as a single HTML file with a Supabase backend — no app store, no install, just a link.
 

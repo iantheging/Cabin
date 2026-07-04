@@ -1,4 +1,4 @@
-# Mobile Redesign Requirements — Mackinaw Cottage Booking App
+# Mobile Redesign Requirements — Bond Family Cottage Booking App
 
 **Target file:** `index.html` (single-file app: inline CSS + JS, Supabase REST backend)
 **Goal:** The app must be fully usable on a phone (360–430px wide) with no pinch-zooming required to read text or tap controls. Desktop layout must continue to work unchanged or improved.
