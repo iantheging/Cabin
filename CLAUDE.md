@@ -35,7 +35,7 @@ Three tables, defined in `SETUP.sql` (the source of truth for schema): `users`, 
 ## Conventions
 
 - **Keep it simple and unfussy.** Match the existing terse, dependency-free style. No frameworks or build tooling. Prefer the fewest lines that read like the surrounding code.
-- **Mobile matters.** The app was redesigned mobile-first (see `MOBILE_REQUIREMENTS.md`). Phones use a fixed bottom nav, calendar cells use colored **bars** (not text chips) plus a tap-to-reveal **day detail panel** (`showDayDetail()`), modals become bottom sheets, and all inputs are ≥16px to avoid iOS zoom. Preserve these when editing; test at ~360px width.
+- **Mobile matters.** The app was redesigned mobile-first (see `requirements/MOBILE_REQUIREMENTS.md`). Phones use a fixed bottom nav, calendar cells use colored **bars** (not text chips) plus a tap-to-reveal **day detail panel** (`showDayDetail()`), modals become bottom sheets, and all inputs are ≥16px to avoid iOS zoom. Preserve these when editing; test at ~360px width.
 - **CSS lives in `:root` custom properties** (`--lake`, `--lighthouse`, etc.) — reuse them; don't hardcode new hex values where a variable exists.
 - Date helpers: `fmt()` (Date→YYYY-MM-DD), `nice()` (short display), `niceFull()` (weekday + date), `nights()`, `getConflictIds()`.
 
@@ -50,6 +50,8 @@ Three tables, defined in `SETUP.sql` (the source of truth for schema): `users`, 
 - `index.html` — the entire app.
 - `SETUP.sql` — database schema + seed admin (`Admin` / `cottage2024`).
 - `DEPLOYMENT_GUIDE.md` — end-user deploy walkthrough (partly outdated, see Deploy note).
-- `MOBILE_REQUIREMENTS.md` — spec that drove the mobile redesign.
 - `README.md` — project overview.
+- `requirements/` — feature/spec docs:
+  - `MOBILE_REQUIREMENTS.md` — spec that drove the mobile redesign (implemented).
+  - `POSTS_REQUIREMENTS.md` — spec for the posts & comments board (not yet built).
 - `.agents/skills/` — installed Supabase agent skills (guidance/reference).
